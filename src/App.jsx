@@ -32,7 +32,7 @@ const App = () => {
       <div className="max-w-4xl mx-auto bg-white p-8 border border-gray-300 shadow-2xl relative" id="informe">
         <div className="flex justify-between items-center mb-6 border-b-4 border-cyan-500 pb-4">
           {/* USAMOS EL LOGO QUE SUBISTE */}
-          <img src="/logo_ocasa.png" alt="OCASA" className="h-14 w-auto" />
+          <img src="../logo_ocasa.png" alt="OCASA" className="h-14 w-auto" />
           
           <div className="text-right">
             <h2 className="text-xl font-black tracking-tight text-slate-700 uppercase leading-none">Informe de Cierre de Operaciones</h2>
