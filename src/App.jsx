@@ -3,10 +3,14 @@ import React, { useState } from 'react';
 const App = () => {
   const [datos, setDatos] = useState({
     fecha: "8 de abril de 2026",
-    b2bV: '0', b2bB: '0',
-    b2cV: '0', b2cB: '0',
+    // Picking
+    pB2BV: '0', pB2BB: '0',
+    pB2CV: '0', pB2CB: '0',
+    // Despachos
     despB: '0', despP: '0',
-    descMCR: '2', descTort: '0',
+    // Descargas
+    descPL4: '0', descTort: '0', descMCR: '0', descAduana: '0',
+    // Otros
     ciclicoLoc: '', movInt: '0', obs: ''
   });
 
@@ -14,29 +18,63 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-100 p-4 font-sans text-slate-900">
-      {/* PANEL DE CONTROL - Solo visible en pantalla */}
+      
+      {/* --- PANEL DE CARGA REORGANIZADO --- */}
       <div className="max-w-4xl mx-auto bg-white p-6 shadow-xl rounded-lg mb-8 border-b-4 border-blue-600 print:hidden">
-        <h2 className="font-bold mb-4 text-blue-800 flex items-center gap-2">📝 PANEL DE CARGA - CIERRE PL3</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">VIAJES B2B</label><input type="text" name="b2bV" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
-          <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">BULTOS B2B</label><input type="text" name="b2bB" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
-          <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">BULTOS DESP.</label><input type="text" name="despB" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
-          <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">PALLETS DESP.</label><input type="text" name="despP" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
-          <div className="flex flex-col col-span-2"><label className="text-[10px] font-bold text-gray-400">LOC. CÍCLICO</label><input type="text" name="ciclicoLoc" placeholder="Ej: A11" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
-          <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">MOV. INTERNOS</label><input type="text" name="movInt" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
-          <div className="flex flex-col col-span-2 md:col-span-4"><label className="text-[10px] font-bold text-gray-400">OBSERVACIONES</label><textarea name="obs" placeholder="Novedades del turno..." onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 h-12 font-bold"></textarea></div>
+        <h2 className="font-bold mb-6 text-blue-800 flex items-center gap-2 text-lg border-b pb-2">📝 PANEL DE CARGA - CIERRE PL3</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          {/* SECCIÓN PICKING */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-black text-emerald-700 uppercase tracking-widest">🛒 Sección Picking</h3>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">B2B VIAJES</label><input type="text" name="pB2BV" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">B2B BULTOS</label><input type="text" name="pB2BB" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">B2C VIAJES</label><input type="text" name="pB2CV" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">B2C BULTOS</label><input type="text" name="pB2CB" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
+            </div>
+          </div>
+
+          {/* SECCIÓN DESPACHOS */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-black text-indigo-700 uppercase tracking-widest">🚚 Sección Despachos</h3>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">TOTAL BULTOS</label><input type="text" name="despB" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">TOTAL PALLETS</label><input type="text" name="despP" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
+            </div>
+          </div>
+
+          {/* SECCIÓN DESCARGAS */}
+          <div className="space-y-4 md:col-span-2 border-t pt-4">
+            <h3 className="text-xs font-black text-orange-700 uppercase tracking-widest">📦 Sección Descargas</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">PL4</label><input type="text" name="descPL4" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">TORTUGAS</label><input type="text" name="descTort" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">MCR</label><input type="text" name="descMCR" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400">ADUANA</label><input type="text" name="descAduana" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
+            </div>
+          </div>
+
+          {/* CÍCLICO Y MOVIMIENTOS */}
+          <div className="space-y-4 md:col-span-2 border-t pt-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400 italic">LOC. CÍCLICO</label><input type="text" name="ciclicoLoc" placeholder="Ej: A11" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold text-blue-600" /></div>
+              <div className="flex flex-col"><label className="text-[10px] font-bold text-gray-400 italic">MOV. INTERNOS</label><input type="text" name="movInt" placeholder="0" onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 font-bold" /></div>
+              <div className="flex flex-col col-span-2 md:col-span-1"><label className="text-[10px] font-bold text-gray-400 italic">OBSERVACIONES</label><textarea name="obs" placeholder="Novedades..." onChange={handleChange} className="border p-2 rounded text-sm bg-gray-50 h-10 font-bold"></textarea></div>
+            </div>
+          </div>
         </div>
-        <div className="mt-4 text-center">
-            <button onClick={() => window.print()} className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold shadow-lg hover:bg-blue-700 transition-all">Imprimir / Guardar PDF</button>
+
+        <div className="mt-6 text-center">
+            <button onClick={() => window.print()} className="bg-blue-600 text-white px-8 py-3 rounded-full font-black shadow-lg hover:bg-blue-700 transition-all uppercase text-sm tracking-widest">Generar Informe PDF</button>
         </div>
       </div>
 
-      {/* REPORTE VISUAL (EL QUE SE MANDA POR WHATSAPP/TESIS) */}
-      <div className="max-w-4xl mx-auto bg-white p-8 border border-gray-300 shadow-2xl relative" id="informe">
+      {/* --- REPORTE VISUAL (VISTA PREVIA) --- */}
+      <div className="max-w-4xl mx-auto bg-white p-8 border border-gray-300 shadow-2xl relative mb-20" id="informe">
         <div className="flex justify-between items-center mb-6 border-b-4 border-cyan-500 pb-4">
-          {/* RUTA FINAL DEL LOGO EN CARPETA PUBLIC */}
           <img src="/logo_ocasa.png" alt="OCASA" className="h-16 w-auto object-contain" />
-          
           <div className="text-right">
             <h2 className="text-xl font-black tracking-tight text-slate-700 uppercase leading-none">Informe de Cierre de Operaciones</h2>
             <p className="text-[10px] font-bold text-slate-500 uppercase mt-1 tracking-widest">Planta: PL3 — Turno: Tarde</p>
@@ -45,43 +83,51 @@ const App = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-6">
+          {/* PICKING */}
           <div className="border-2 border-emerald-700 rounded-xl p-4 relative bg-white">
-            <span className="absolute -top-3 left-4 bg-white px-2 font-black text-emerald-800 text-[10px]">🛒 PREPARACIÓN (PICKING)</span>
-            <div className="mt-1">
-              <p className="flex justify-between border-b pb-1 text-sm font-bold">B2B: <span className="text-lg font-black text-slate-800">{datos.b2bV} V / {datos.b2bB} B</span></p>
-              <p className="flex justify-between pt-1 text-sm font-bold">B2C: <span className="text-lg font-black text-slate-800">{datos.b2cV} V / {datos.b2cB} B</span></p>
+            <span className="absolute -top-3 left-4 bg-white px-2 font-black text-emerald-800 text-[10px]">🛒 RESUMEN DE PREPARACIÓN (PICKING)</span>
+            <div className="mt-1 space-y-1">
+              <p className="flex justify-between border-b pb-1 text-sm font-bold italic">B2B: <span className="text-lg font-black text-slate-800">{datos.pB2BV} V / {datos.pB2BB} Bultos</span></p>
+              <p className="flex justify-between pt-1 text-sm font-bold italic">B2C: <span className="text-lg font-black text-slate-800">{datos.pB2CV} V / {datos.pB2CB} Bultos</span></p>
             </div>
           </div>
 
+          {/* DESPACHOS */}
           <div className="border-2 border-indigo-800 rounded-xl p-4 relative bg-indigo-50/30 text-center flex flex-col justify-center">
             <span className="absolute -top-3 left-4 bg-white px-2 font-black text-indigo-900 text-[10px]">🚚 DESPACHOS (SALIDAS)</span>
             <p className="text-4xl font-black text-indigo-900 leading-none">{datos.despB} / {datos.despP}</p>
-            <p className="text-[10px] font-black uppercase mt-1 text-indigo-700 tracking-tighter">Bultos / Pallets Totales</p>
+            <p className="text-[10px] font-black uppercase mt-1 text-indigo-700 tracking-tighter italic">Total Bultos / Pallets</p>
           </div>
 
+          {/* DESCARGAS (Detallado) */}
           <div className="col-span-2 border-2 border-slate-300 rounded-xl overflow-hidden shadow-sm">
             <div className="bg-slate-800 text-white font-bold text-[10px] py-1 px-4 uppercase tracking-widest text-center">Descargas y Movimientos Internos</div>
             <div className="grid grid-cols-3 divide-x-2">
-              <div className="p-4 bg-orange-50/50">
-                <p className="text-[9px] font-black text-orange-700 uppercase mb-1">Descargas</p>
-                <p className="text-sm font-bold italic text-slate-700">MCR 2: <span className="text-xl font-black">{datos.descMCR}</span></p>
-                <p className="text-[8px] text-slate-400 font-bold italic mt-2 border-t pt-1 text-right">SISTEMA SIN PL4</p>
+              <div className="p-4 bg-orange-50/50 col-span-1">
+                <p className="text-[9px] font-black text-orange-700 uppercase mb-2 italic">Descargas del Turno</p>
+                <div className="space-y-1 text-[11px] font-bold text-slate-700">
+                    <p className="flex justify-between">PL4: <span>{datos.descPL4}</span></p>
+                    <p className="flex justify-between text-blue-700">TORTUGAS: <span>{datos.descTort}</span></p>
+                    <p className="flex justify-between">MCR: <span>{datos.descMCR}</span></p>
+                    <p className="flex justify-between text-red-600 uppercase text-[9px]">Aduana: <span>{datos.descAduana}</span></p>
+                </div>
               </div>
               <div className="p-4 text-center flex flex-col justify-center bg-white">
-                <p className="text-[9px] font-black text-emerald-700 uppercase mb-1 font-bold">Mov. Stock</p>
+                <p className="text-[9px] font-black text-emerald-700 uppercase mb-1 italic">Mov. Stock</p>
                 <p className="text-3xl font-black text-slate-800 leading-none">{datos.movInt}</p>
-                <p className="text-[8px] font-bold text-slate-400 mt-1 uppercase italic">Bultos</p>
+                <p className="text-[8px] font-bold text-slate-400 mt-1 uppercase italic">Bultos Totales</p>
               </div>
               <div className="p-4 text-center flex flex-col justify-center bg-sky-50/30">
-                <p className="text-[9px] font-black text-sky-700 uppercase mb-1 italic">Cíclico</p>
-                <p className="text-lg font-black uppercase text-slate-800 tracking-tight">{datos.ciclicoLoc || '---'}</p>
+                <p className="text-[9px] font-black text-sky-700 uppercase mb-1 italic font-bold">Cíclico (Auditado)</p>
+                <p className="text-xl font-black uppercase text-slate-800 tracking-tight">{datos.ciclicoLoc || '---'}</p>
               </div>
             </div>
           </div>
 
+          {/* OBSERVACIONES */}
           <div className="col-span-2 border-2 border-yellow-500 rounded-xl p-4 relative bg-yellow-50/20 shadow-sm">
-            <span className="absolute -top-3 left-4 bg-white px-2 font-black text-yellow-700 text-[10px] uppercase">📋 Observaciones</span>
-            <p className="text-[11px] italic font-semibold text-slate-700 leading-tight">
+            <span className="absolute -top-3 left-4 bg-white px-2 font-black text-yellow-700 text-[10px] uppercase">📋 Observaciones y Notas del Turno</span>
+            <p className="text-[11px] italic font-bold text-slate-700 leading-tight">
               {datos.obs || 'Sin novedades de relevancia durante el turno tarde en Planta PL3.'}
             </p>
           </div>
