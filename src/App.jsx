@@ -308,8 +308,8 @@ document.head.appendChild(styleTag);
 const WEB_APP_URL =
   'https://script.google.com/macros/s/AKfycbwMwYvjERyxcc4W9AzjFkkwPFfVrsAft6JeOW6g1b1hucnSItyrmc-vmI-BGPhjnyXk/exec';
 
-const LOGO_URL =
-  'https://logodownload.org/wp-content/uploads/2019/08/ocasa-logo.png';
+// --- SE ACTUALIZÓ ESTA LÍNEA PARA USAR TU LOGO LOCAL ---
+const LOGO_URL = '/logo_ocasa.png'; 
 
 const INIT = {
   fecha: '', turno: 'Mañana',
@@ -538,10 +538,10 @@ const App = () => {
                 <div className="desc-col">
                   <div className="desc-col-title">Detalle por Origen</div>
                   {[
-                    { label:'PL4',      c:d.descPL4,    b:d.bultosPL4,    color:'#B45309' },
-                    { label:'TORTUGAS', c:d.descTort,   b:d.bultosTort,   color:'var(--teal-dark)' },
-                    { label:'MCR',      c:d.descMCR,    b:d.bultosMCR,    color:'var(--charcoal)' },
-                    { label:'ADUANA',   c:d.descAduana, b:d.bultosAduana, color:'var(--red)' },
+                    { label:'PL4',       c:d.descPL4,    b:d.bultosPL4,    color:'#B45309' },
+                    { label:'TORTUGAS', c:d.descTort,    b:d.bultosTort,   color:'var(--teal-dark)' },
+                    { label:'MCR',       c:d.descMCR,    b:d.bultosMCR,    color:'var(--charcoal)' },
+                    { label:'ADUANA',    c:d.descAduana, b:d.bultosAduana, color:'var(--red)' },
                   ].map(({ label, c, b, color }) => (
                     <div key={label} className="origen-row">
                       <span style={{ color, fontWeight:700, fontSize:11, letterSpacing:'0.06em' }}>{label}</span>
@@ -603,4 +603,3 @@ const App = () => {
 };
 
 export default App;
-
