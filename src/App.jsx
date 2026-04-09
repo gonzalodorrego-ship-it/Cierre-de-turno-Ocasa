@@ -313,7 +313,7 @@ const LOGO_URL = '/logo_ocasa.png';
 const INIT = {
   fecha: '', turno: 'Mañana',
   pB2BV: '', pB2BB: '', pB2CV: '', pB2CB: '',
-  despB: '', despP: '',
+  despV: '', despB: '', despP: '',
   descPL4: '', descTort: '', descMCR: '', descAduana: '',
   bultosPL4: '', bultosTort: '', bultosMCR: '', bultosAduana: '',
   ciclicoLoc: '', ciclicoSKU: '', ciclicoBultos: '', movInt: '', obs: '',
@@ -415,8 +415,15 @@ const App = () => {
                     <input type="text" name="pB2CB" placeholder="Bultos" value={d.pB2CB} onChange={handle} className="input-field" />
                   </div>
                 </div>
-                <Field label="Despachos — Bultos Totales" name="despB" placeholder="0" value={d.despB} onChange={handle} />
-                <Field label="Despachos — Pallets"        name="despP" placeholder="0" value={d.despP} onChange={handle} />
+                
+                <div className="input-group" style={{ gridColumn: 'span 2' }}>
+                    <span className="input-label">Despachos — Viajes / Bultos / Pallets</span>
+                    <div className="pair" style={{ gap: '5px' }}>
+                        <input type="text" name="despV" placeholder="Viajes" value={d.despV} onChange={handle} className="input-field" />
+                        <input type="text" name="despB" placeholder="Bultos" value={d.despB} onChange={handle} className="input-field" />
+                        <input type="text" name="despP" placeholder="Pallets" value={d.despP} onChange={handle} className="input-field" />
+                    </div>
+                </div>
               </div>
             </div>
 
@@ -517,14 +524,19 @@ const App = () => {
 
               <div className="metric-card teal-hero" style={{ paddingTop:22, textAlign:'center', display:'flex', flexDirection:'column', justifyContent:'center' }}>
                 <div className="metric-card-label">🚚 Despachos Realizados</div>
-                <div style={{ display:'flex', justifyContent:'center', alignItems:'baseline', gap:20 }}>
+                <div style={{ display:'flex', justifyContent:'center', alignItems:'baseline', gap:12 }}>
                   <div>
-                    <div className="hero-number">{n(d.despB)}</div>
+                    <div className="hero-number" style={{ fontSize:38 }}>{n(d.despV)}</div>
+                    <div className="hero-sub">Viajes</div>
+                  </div>
+                  <div style={{ fontSize:24, color:'var(--teal)', fontWeight:300 }}>/</div>
+                  <div>
+                    <div className="hero-number" style={{ fontSize:38 }}>{n(d.despB)}</div>
                     <div className="hero-sub">Bultos</div>
                   </div>
-                  <div style={{ fontSize:28, color:'var(--teal)', fontWeight:300 }}>/</div>
+                  <div style={{ fontSize:24, color:'var(--teal)', fontWeight:300 }}>/</div>
                   <div>
-                    <div className="hero-number" style={{ fontSize:40 }}>{n(d.despP)}</div>
+                    <div className="hero-number" style={{ fontSize:38 }}>{n(d.despP)}</div>
                     <div className="hero-sub">Pallets</div>
                   </div>
                 </div>
