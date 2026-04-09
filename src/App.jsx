@@ -316,7 +316,7 @@ const INIT = {
   despB: '', despP: '',
   descPL4: '', descTort: '', descMCR: '', descAduana: '',
   bultosPL4: '', bultosTort: '', bultosMCR: '', bultosAduana: '',
-  ciclicoLoc: '', movInt: '', obs: '',
+  ciclicoLoc: '', ciclicoSKU: '', ciclicoBultos: '', movInt: '', obs: '',
   rmaCant: '', rendiciones: '',
 };
 
@@ -427,7 +427,15 @@ const App = () => {
                 <Field label="RMA Realizados (Unidades)"     name="rmaCant"     placeholder="0"   value={d.rmaCant}      onChange={handle} />
                 <Field label="Viajes Rendidos"                name="rendiciones" placeholder="0"   value={d.rendiciones} onChange={handle} />
                 <Field label="Movimientos Internos de Stock" name="movInt"      placeholder="0"   value={d.movInt}      onChange={handle} />
-                <Field label="Localizadores Cíclicos"        name="ciclicoLoc"  placeholder="S/N" value={d.ciclicoLoc}  onChange={handle} />
+                
+                <div className="input-group">
+                    <span className="input-label">Cíclicos — Loc. / SKU / Bultos</span>
+                    <div className="pair" style={{ gap: '5px' }}>
+                        <input type="text" name="ciclicoLoc" placeholder="Loc." value={d.ciclicoLoc} onChange={handle} className="input-field" />
+                        <input type="text" name="ciclicoSKU" placeholder="SKU" value={d.ciclicoSKU} onChange={handle} className="input-field" />
+                        <input type="text" name="ciclicoBultos" placeholder="Bult." value={d.ciclicoBultos} onChange={handle} className="input-field" />
+                    </div>
+                </div>
               </div>
             </div>
           </div>
@@ -437,7 +445,7 @@ const App = () => {
             <div className="section-title orange">🚛 Camiones y Bultos Descargados</div>
             <div className="four-col">
               {[
-                { key:'PL4',      cls:'pl4',    cn:'descPL4',    bn:'bultosPL4'    },
+                { key:'PL4',    cls:'pl4',    cn:'descPL4',    bn:'bultosPL4'    },
                 { key:'TORTUGAS', cls:'tort',   cn:'descTort',   bn:'bultosTort'   },
                 { key:'MCR',      cls:'mcr',    cn:'descMCR',    bn:'bultosMCR'    },
                 { key:'ADUANA',   cls:'aduana', cn:'descAduana', bn:'bultosAduana' },
@@ -537,14 +545,14 @@ const App = () => {
                 <div className="desc-col">
                   <div className="desc-col-title">Detalle por Origen</div>
                   {[
-                    { label:'PL4',       c:d.descPL4,    b:d.bultosPL4,    color:'#B45309' },
+                    { label:'PL4',        c:d.descPL4,    b:d.bultosPL4,    color:'#B45309' },
                     { label:'TORTUGAS', c:d.descTort,    b:d.bultosTort,   color:'var(--teal-dark)' },
-                    { label:'MCR',       c:d.descMCR,    b:d.bultosMCR,    color:'var(--charcoal)' },
+                    { label:'MCR',        c:d.descMCR,    b:d.bultosMCR,    color:'var(--charcoal)' },
                     { label:'ADUANA',    c:d.descAduana, b:d.bultosAduana, color:'var(--red)' },
                   ].map(({ label, c, b, color }) => (
                     <div key={label} className="origen-row">
                       <span style={{ color, fontWeight:700, fontSize:11, letterSpacing:'0.06em' }}>{label}</span>
-                      <span className="val">{n(c)} Camiones — {n(b)} Bultos</span>
+                      <span className="val">{n(c)} Cam — {n(b)} Bultos</span>
                     </div>
                   ))}
                 </div>
@@ -552,7 +560,18 @@ const App = () => {
                   <div className="desc-col-title">Stock Interno</div>
                   <div className="stock-num">{n(d.movInt)}</div>
                   <div className="stock-label">Movimientos Internos</div>
-                  <div className="stock-num" style={{ fontSize:22, color:'var(--teal)' }}>{n(d.ciclicoLoc)}</div>
+                  
+                  {/* REPORTE CICLICO CON LOS 3 DATOS */}
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'baseline' }}>
+                    <div className="stock-num" style={{ fontSize:22, color:'var(--teal)' }}>{n(d.ciclicoLoc)}</div>
+                    <span style={{ fontSize:8, fontWeight:700, color:'var(--text-muted)' }}>LOC</span>
+                    <span style={{ color:'#DDD' }}>/</span>
+                    <div className="stock-num" style={{ fontSize:22, color:'var(--teal)' }}>{n(d.ciclicoSKU)}</div>
+                    <span style={{ fontSize:8, fontWeight:700, color:'var(--text-muted)' }}>SKU</span>
+                    <span style={{ color:'#DDD' }}>/</span>
+                    <div className="stock-num" style={{ fontSize:22, color:'var(--teal)' }}>{n(d.ciclicoBultos)}</div>
+                    <span style={{ fontSize:8, fontWeight:700, color:'var(--text-muted)' }}>BUL</span>
+                  </div>
                   <div className="stock-label">Localizadores Cíclicos</div>
                 </div>
               </div>
