@@ -308,7 +308,6 @@ document.head.appendChild(styleTag);
 const WEB_APP_URL =
   'https://script.google.com/macros/s/AKfycbwMwYvjERyxcc4W9AzjFkkwPFfVrsAft6JeOW6g1b1hucnSItyrmc-vmI-BGPhjnyXk/exec';
 
-// --- SE ACTUALIZÓ ESTA LÍNEA PARA USAR TU LOGO LOCAL ---
 const LOGO_URL = '/logo_ocasa.png'; 
 
 const INIT = {
@@ -425,8 +424,8 @@ const App = () => {
             <div className="panel-card">
               <div className="section-title purple">🔄 RMA y Control Operativo</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                <Field label="RMA Realizados (Unidades)"     name="rmaCant"     placeholder="0"   value={d.rmaCant}     onChange={handle} />
-                <Field label="Viajes Rendidos"               name="rendiciones" placeholder="0"   value={d.rendiciones} onChange={handle} />
+                <Field label="RMA Realizados (Unidades)"     name="rmaCant"     placeholder="0"   value={d.rmaCant}      onChange={handle} />
+                <Field label="Viajes Rendidos"                name="rendiciones" placeholder="0"   value={d.rendiciones} onChange={handle} />
                 <Field label="Movimientos Internos de Stock" name="movInt"      placeholder="0"   value={d.movInt}      onChange={handle} />
                 <Field label="Localizadores Cíclicos"        name="ciclicoLoc"  placeholder="S/N" value={d.ciclicoLoc}  onChange={handle} />
               </div>
@@ -493,17 +492,17 @@ const App = () => {
                 <div className="metric-row">
                   <span className="metric-key">B2B</span>
                   <span>
-                    <span className="metric-val">{n(d.pB2BV)}</span><span className="metric-unit">VJ</span>
+                    <span className="metric-val">{n(d.pB2BV)}</span><span className="metric-unit">Viajes</span>
                     {' '}<span style={{ color:'#CCC', fontSize:14, margin:'0 4px' }}>/</span>{' '}
-                    <span className="metric-val">{n(d.pB2BB)}</span><span className="metric-unit">BLT</span>
+                    <span className="metric-val">{n(d.pB2BB)}</span><span className="metric-unit">Bultos</span>
                   </span>
                 </div>
                 <div className="metric-row">
                   <span className="metric-key">B2C</span>
                   <span>
-                    <span className="metric-val">{n(d.pB2CV)}</span><span className="metric-unit">VJ</span>
+                    <span className="metric-val">{n(d.pB2CV)}</span><span className="metric-unit">Viajes</span>
                     {' '}<span style={{ color:'#CCC', fontSize:14, margin:'0 4px' }}>/</span>{' '}
-                    <span className="metric-val">{n(d.pB2CB)}</span><span className="metric-unit">BLT</span>
+                    <span className="metric-val">{n(d.pB2CB)}</span><span className="metric-unit">Bultos</span>
                   </span>
                 </div>
               </div>
@@ -545,7 +544,7 @@ const App = () => {
                   ].map(({ label, c, b, color }) => (
                     <div key={label} className="origen-row">
                       <span style={{ color, fontWeight:700, fontSize:11, letterSpacing:'0.06em' }}>{label}</span>
-                      <span className="val">{n(c)} C · {n(b)} B</span>
+                      <span className="val">{n(c)} Camiones — {n(b)} Bultos</span>
                     </div>
                   ))}
                 </div>
