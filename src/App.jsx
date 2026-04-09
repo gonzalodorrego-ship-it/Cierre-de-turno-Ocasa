@@ -564,7 +564,7 @@ const App = () => {
                   ].map(({ label, c, b, color }) => (
                     <div key={label} className="origen-row">
                       <span style={{ color, fontWeight:700, fontSize:11, letterSpacing:'0.06em' }}>{label}</span>
-                      <span className="val">{n(c)} Cam — {n(b)} Bultos</span>
+                      <span className="val">{n(c)} Camiones — {n(b)} Bultos</span>
                     </div>
                   ))}
                 </div>
