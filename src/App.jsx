@@ -11,8 +11,7 @@ const App = () => {
   });
 
   // URL DE TU IMPLEMENTACIÓN DE GOOGLE APPS SCRIPT
-  const WEB_APP_URL =const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzM9IGr9vvOR4u1fa5Ieeo9Byy2MHJjsOgm4a1aNrGaz_8VHiFtZdlMzrnL-y5Msd4Z/exec";
-
+  const WEB_APP_URL =const WEB_APP_URL =https://script.google.com/macros/s/AKfycbzM9IGr9vvOR4u1fa5Ieeo9Byy2MHJjsOgm4a1aNrGaz_8VHiFtZdlMzrnL-y5Msd4Z/exec
   useEffect(() => {
     const hoy = new Date();
     const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
