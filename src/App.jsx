@@ -7,12 +7,12 @@ const App = () => {
     pB2BV: '0', pB2BB: '0', pB2CV: '0', pB2CB: '0',
     despB: '0', despP: '0',
     descTort: '0', descMCR: '0', descAduana: '0',
-    bultosTotal: '0', // Columna L: Bultos desc.
-    movInt: '0', ciclicoLoc: 'S/N', rmaCant: '0', rendiciones: '0',
-    obs: '' // Columna Q: Observaciones
+    bultosTotal: '0',
+    movInt: '0', ciclicoLoc: '0', rmaCant: '0', rendiciones: '0',
+    obs: ''
   });
 
-  // URL DE IMPLEMENTACIÓN ACTUALIZADA
+  // REEMPLAZÁ CON TU URL DE IMPLEMENTACIÓN RECIÉN GENERADA
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwMwYvjERyxcc4W9AzjFkkwPFfVrsAft6JeOW6g1b1hucnSItyrmc-vmI-BGPhjnyXk/exec";
 
   useEffect(() => {
@@ -32,128 +32,121 @@ const App = () => {
         body: JSON.stringify(datos),
         headers: { 'Content-Type': 'application/json' }
       });
-      alert("✅ ¡Cierre guardado correctamente en las columnas A-Q!");
-      window.scrollTo({ top: 900, behavior: 'smooth' });
+      alert("✅ Guardado en Excel (Columnas A a Q)");
     } catch (error) {
-      alert("❌ Error al guardar datos");
+      alert("❌ Error de conexión");
     } finally {
       setIsSaving(false);
     }
   };
 
-  const totalCamiones = Number(datos.descTort) + Number(datos.descMCR) + Number(datos.descAduana);
-
   return (
     <div className="min-h-screen bg-slate-100 p-4 font-sans text-slate-900">
       
-      {/* PANEL DE CARGA */}
+      {/* FORMULARIO DE CARGA */}
       <div className="max-w-5xl mx-auto bg-white p-6 shadow-xl rounded-lg mb-8 border-b-4 border-blue-600 print:hidden">
-        <h2 className="font-bold mb-6 text-blue-800 border-b pb-2 tracking-tight">📝 CIERRE OPERATIVO PL3</h2>
+        <h2 className="font-bold mb-6 text-blue-800 border-b pb-2">📦 CARGA DE DATOS PL3</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* PICKING Y DESPACHO */}
-          <div className="space-y-4">
-            <h3 className="text-xs font-black text-emerald-700 uppercase border-l-4 border-emerald-500 pl-2">🛒 Salidas</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* SECCIÓN SALIDAS */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-black text-emerald-700 uppercase italic">🛒 Salidas (B2B / B2C / Despachos)</h3>
             <div className="grid grid-cols-2 gap-2">
-              <input type="text" name="pB2BV" placeholder="B2B Viajes" onChange={handleChange} className="border p-2 rounded text-sm font-bold" />
-              <input type="text" name="pB2BB" placeholder="B2B Bultos" onChange={handleChange} className="border p-2 rounded text-sm font-bold" />
+              <input type="text" name="pB2BV" placeholder="B2B Viajes" onChange={handleChange} className="border p-2 rounded text-sm" />
+              <input type="text" name="pB2BB" placeholder="B2B Bultos" onChange={handleChange} className="border p-2 rounded text-sm" />
               <input type="text" name="despB" placeholder="Desp. Bultos" onChange={handleChange} className="border p-2 rounded text-sm bg-indigo-50 font-bold" />
               <input type="text" name="despP" placeholder="Desp. Pallets" onChange={handleChange} className="border p-2 rounded text-sm bg-indigo-50 font-bold" />
             </div>
           </div>
 
-          {/* DESCARGAS (Tortugas, MCR, Aduana) */}
-          <div className="space-y-4">
-            <h3 className="text-xs font-black text-orange-700 uppercase border-l-4 border-orange-500 pl-2">📦 Descargas</h3>
+          {/* SECCIÓN DESCARGAS (SIN PL4) */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-black text-orange-700 uppercase italic">🚛 Camiones y Bultos Descargados</h3>
             <div className="grid grid-cols-3 gap-2">
-              <input type="text" name="descTort" placeholder="Tortugas" onChange={handleChange} className="border p-2 rounded text-sm font-bold" />
-              <input type="text" name="descMCR" placeholder="MCR" onChange={handleChange} className="border p-2 rounded text-sm font-bold" />
-              <input type="text" name="descAduana" placeholder="Aduana" onChange={handleChange} className="border p-2 rounded text-sm font-bold" />
+              <input type="text" name="descTort" placeholder="Tortugas" onChange={handleChange} className="border p-2 rounded text-sm" />
+              <input type="text" name="descMCR" placeholder="MCR" onChange={handleChange} className="border p-2 rounded text-sm" />
+              <input type="text" name="descAduana" placeholder="Aduana" onChange={handleChange} className="border p-2 rounded text-sm" />
             </div>
-            <input type="text" name="bultosTotal" placeholder="BULTOS DESCARGADOS (Gral.)" onChange={handleChange} className="w-full border-2 border-orange-200 p-2 rounded font-black text-orange-900 bg-orange-50 text-center" />
+            <input type="text" name="bultosTotal" placeholder="BULTOS TOTALES DESCARGADOS" onChange={handleChange} className="w-full border-2 border-orange-200 p-2 rounded font-black text-center bg-orange-50" />
           </div>
 
-          {/* CONTROL Y STOCK */}
-          <div className="md:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4 border-t pt-4">
-            <input type="text" name="rmaCant" placeholder="RMA Unid." onChange={handleChange} className="border p-2 rounded text-sm font-bold border-purple-200" />
-            <input type="text" name="rendiciones" placeholder="Viajes Rendidos" onChange={handleChange} className="border p-2 rounded text-sm font-bold border-blue-200" />
-            <input type="text" name="movInt" placeholder="Mov. Internos" onChange={handleChange} className="border p-2 rounded text-sm font-bold" />
-            <input type="text" name="ciclicoLoc" placeholder="Loc. Cíclico" onChange={handleChange} className="border p-2 rounded text-sm font-bold" />
-          </div>
-
-          {/* OBSERVACIONES */}
-          <div className="md:col-span-2">
-            <textarea name="obs" placeholder="Observaciones del turno (Columna Q)..." onChange={handleChange} className="w-full border p-3 rounded text-sm font-medium bg-yellow-50/20 border-yellow-100" />
+          {/* CONTROL Y OBSERVACIONES */}
+          <div className="md:col-span-2 space-y-4 pt-4 border-t">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <input type="text" name="rmaCant" placeholder="RMA Unid." onChange={handleChange} className="border p-2 rounded text-sm font-bold" />
+              <input type="text" name="rendiciones" placeholder="Viajes Rend." onChange={handleChange} className="border p-2 rounded text-sm font-bold" />
+              <input type="text" name="movInt" placeholder="Mov. Internos" onChange={handleChange} className="border p-2 rounded text-sm" />
+              <input type="text" name="ciclicoLoc" placeholder="Loc. Cíclico" onChange={handleChange} className="border p-2 rounded text-sm" />
+            </div>
+            <textarea name="obs" placeholder="OBSERVACIONES (Columna Q)..." onChange={handleChange} className="w-full border-2 border-blue-100 p-3 rounded text-sm h-20" />
           </div>
         </div>
 
-        <div className="mt-8 flex gap-4 justify-center">
-            <button onClick={handleSave} disabled={isSaving} className="bg-emerald-600 text-white px-10 py-3 rounded-lg font-black shadow-lg uppercase text-sm">
-              {isSaving ? "⏳ Guardando..." : "💾 Guardar en Excel"}
-            </button>
-            <button onClick={() => window.print()} className="bg-slate-800 text-white px-10 py-3 rounded-lg font-black shadow-lg uppercase text-sm">
-              🖨️ Imprimir PDF
-            </button>
+        <div className="mt-6 flex gap-4 justify-center">
+          <button onClick={handleSave} className="bg-emerald-600 text-white px-10 py-2 rounded-lg font-black uppercase text-xs">{isSaving ? "Guardando..." : "Guardar en Sheet"}</button>
+          <button onClick={() => window.print()} className="bg-slate-800 text-white px-10 py-2 rounded-lg font-black uppercase text-xs">Generar PDF</button>
         </div>
       </div>
 
-      {/* INFORME PARA PDF */}
-      <div className="max-w-5xl mx-auto bg-white p-10 border border-slate-200 shadow-2xl relative mb-20">
+      {/* REPORTE PARA IMPRIMIR */}
+      <div className="max-w-5xl mx-auto bg-white p-10 border border-slate-200 shadow-2xl relative">
         <div className="flex justify-between items-center mb-8 border-b-4 border-blue-600 pb-5">
-          <img src="/logo_ocasa.png" alt="OCASA" className="h-16 w-auto object-contain" />
-          <div className="text-right">
-            <h1 className="text-2xl font-black text-slate-800 uppercase leading-none">Cierre Operativo Diálogo</h1>
-            <p className="text-xs font-bold text-blue-600 mt-1 uppercase tracking-widest">Planta: PL3 — Turno: {datos.turno}</p>
-            <div className="mt-2 bg-slate-900 text-white px-4 py-1 inline-block font-black text-[11px] rounded uppercase tracking-widest tracking-tighter">FECHA: {datos.fecha}</div>
+          <div className="flex items-center gap-3">
+            <div className="bg-slate-900 text-white p-2 font-black text-xl">OCASA</div>
+            <h1 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Informe Operativo PL3</h1>
+          </div>
+          <div className="text-right bg-slate-100 p-2 rounded">
+            <p className="text-[10px] font-bold text-blue-600 uppercase italic">Turno: {datos.turno}</p>
+            <p className="font-black text-xs uppercase">{datos.fecha}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
-          <div className="border-2 border-emerald-700 rounded-2xl p-6">
-            <p className="text-emerald-800 font-black text-[10px] uppercase mb-2">🛒 Picking Realizado</p>
-            <p className="flex justify-between font-bold border-b pb-1 text-sm">B2B: <span className="font-black text-lg">{datos.pB2BV} V / {datos.pB2BB} B</span></p>
-            <p className="flex justify-between font-bold pt-1 text-sm">B2C: <span className="font-black text-lg">{datos.pB2CV} V / {datos.pB2CB} B</span></p>
+        <div className="grid grid-cols-3 gap-6">
+          <div className="border border-emerald-500 rounded-xl p-4 bg-emerald-50/10">
+            <p className="text-[9px] font-black text-emerald-700 uppercase mb-2">🛒 Picking</p>
+            <p className="text-xs">B2B: <strong>{datos.pB2BV} V / {datos.pB2BB} B</strong></p>
+            <p className="text-xs">B2C: <strong>{datos.pB2CV} V / {datos.pB2CB} B</strong></p>
+          </div>
+          <div className="border border-indigo-600 rounded-xl p-4 bg-indigo-50/10 text-center">
+            <p className="text-[9px] font-black text-indigo-700 uppercase mb-1">🚚 Despachos</p>
+            <p className="text-3xl font-black">{datos.despB} / {datos.despP}</p>
+            <p className="text-[8px] font-bold text-slate-400 uppercase">Bultos / Pallets</p>
+          </div>
+          <div className="border border-orange-500 rounded-xl p-4 bg-orange-50/10 text-center">
+            <p className="text-[9px] font-black text-orange-700 uppercase mb-1">📦 Descargas Gral.</p>
+            <p className="text-3xl font-black text-orange-900">{datos.bultosTotal}</p>
+            <p className="text-[8px] font-bold text-slate-400 uppercase">Bultos Totales</p>
           </div>
 
-          <div className="border-2 border-indigo-800 rounded-2xl p-6 bg-indigo-50/30 text-center flex flex-col justify-center">
-            <p className="text-indigo-900 font-black text-[10px] uppercase mb-1">🚚 Despachos Realizados</p>
-            <p className="text-5xl font-black text-indigo-950 leading-none">{datos.despB} / {datos.despP}</p>
-            <p className="text-[10px] font-bold text-indigo-600 mt-2 uppercase">Bultos / Pallets</p>
-          </div>
-
-          <div className="col-span-2 border-2 border-slate-300 rounded-2xl overflow-hidden bg-white">
-            <div className="bg-slate-900 text-white font-black text-[11px] py-2 px-6 uppercase text-center tracking-widest">Descargas y Gestión de Stock</div>
-            <div className="grid grid-cols-3 divide-x-2 divide-slate-100 p-6 text-center">
-              <div>
-                <p className="text-[10px] font-black text-slate-500 uppercase">Camiones (T/M/A)</p>
-                <p className="text-4xl font-black">{totalCamiones}</p>
-              </div>
-              <div className="bg-orange-50/20">
-                <p className="text-[10px] font-black text-orange-700 uppercase">Total Bultos</p>
-                <p className="text-4xl font-black text-orange-900">{datos.bultosTotal}</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[10px] font-black text-emerald-700 uppercase">Stock / Cíclico</p>
-                <p className="font-black text-slate-800 text-sm">Mov: {datos.movInt}</p>
-                <p className="font-black text-slate-800 text-sm">Loc: {datos.ciclicoLoc}</p>
-              </div>
+          <div className="col-span-3 grid grid-cols-4 gap-4 py-4 border-t border-b border-slate-100">
+            <div className="text-center">
+              <p className="text-[8px] font-bold text-slate-400 uppercase">Tortugas</p>
+              <p className="font-black">{datos.descTort}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-[8px] font-bold text-slate-400 uppercase">MCR</p>
+              <p className="font-black">{datos.descMCR}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-[8px] font-bold text-slate-400 uppercase">Aduana</p>
+              <p className="font-black">{datos.descAduana}</p>
+            </div>
+            <div className="text-center bg-slate-50 rounded p-1">
+              <p className="text-[8px] font-bold text-slate-400 uppercase">RMA / Rend.</p>
+              <p className="text-[10px] font-black">{datos.rmaCant} U / {datos.rendiciones} V</p>
             </div>
           </div>
 
-          <div className="col-span-2 grid grid-cols-2 gap-4 border-t pt-4">
-            <div className="bg-purple-50 p-4 rounded-xl border-2 border-purple-200">
-               <p className="text-[10px] font-black text-purple-700 uppercase">RMA Realizados</p>
-               <p className="text-3xl font-black">{datos.rmaCant}</p>
-            </div>
-            <div className="bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
-               <p className="text-[10px] font-black text-blue-700 uppercase">Rendiciones</p>
-               <p className="text-3xl font-black">{datos.rendiciones}</p>
-            </div>
-            <div className="col-span-2 bg-yellow-50/30 p-4 rounded-xl border-2 border-yellow-200">
-               <p className="text-[10px] font-black text-yellow-800 uppercase mb-1">📋 Observaciones:</p>
-               <p className="text-sm font-medium italic text-slate-600">{datos.obs || "Sin novedades en el turno."}</p>
-            </div>
+          <div className="col-span-3">
+             <p className="text-[9px] font-black text-slate-800 uppercase mb-1 italic">Observaciones:</p>
+             <div className="border border-slate-200 p-3 rounded-lg text-xs italic text-slate-600 min-h-[50px] bg-slate-50">
+               {datos.obs || "Sin novedades."}
+             </div>
           </div>
+        </div>
+
+        <div className="mt-10 pt-4 border-t text-center text-[8px] font-bold text-slate-400 uppercase tracking-widest">
+          Optimización Logística PL3 — OCASA 2026
         </div>
       </div>
     </div>
