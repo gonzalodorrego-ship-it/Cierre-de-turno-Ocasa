@@ -28,6 +28,8 @@ styleTag.textContent = `
     --orange:      #D97706;
     --red:         #C0392B;
     --blue:        #1B5EBF;
+    --wpp:         #25D366;
+    --slack:       #4A154B;
   }
   body {
     font-family: 'Barlow', sans-serif;
@@ -140,19 +142,30 @@ styleTag.textContent = `
     resize: none; outline: none; transition: border-color 0.15s;
   }
   .obs-area:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,180,180,0.12); }
-  .btn-row { display: flex; gap: 12px; justify-content: center; margin-top: 8px; }
+  
+  .btn-row { display: flex; gap: 12px; justify-content: center; margin-top: 8px; flex-wrap: wrap; }
   .btn {
-    display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px;
-    border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px;
+    display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px;
+    border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 13px;
     font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
     cursor: pointer; border: none; transition: transform 0.1s, filter 0.1s;
   }
   .btn:active { transform: translateY(1px); }
   .btn-save { background: var(--teal); color: var(--white); box-shadow: 0 4px 16px rgba(0,180,180,0.35); }
-  .btn-save:hover { filter: brightness(1.08); }
-  .btn-save:disabled { background: #AAC8C8; box-shadow: none; cursor: not-allowed; }
   .btn-print { background: var(--black); color: var(--white); box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
-  .btn-print:hover { background: var(--charcoal); }
+  
+  /* Botones Compartir */
+  .share-section {
+    margin-top: 24px; padding-top: 20px; border-top: 1.5px dashed var(--border);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .share-label {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 800;
+    color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .btn-wpp   { background: var(--wpp); color: white; }
+  .btn-slack { background: var(--slack); color: white; }
+  .btn-mail  { background: var(--blue); color: white; }
 
   /* ── REPORTE ── */
   .report-preview {
@@ -305,9 +318,7 @@ styleTag.textContent = `
 document.head.appendChild(styleTag);
 
 // ─── Constants ───────────────────────────────────────────────────────────────
-const WEB_APP_URL =
-  'https://script.google.com/macros/s/AKfycbwMwYvjERyxcc4W9AzjFkkwPFfVrsAft6JeOW6g1b1hucnSItyrmc-vmI-BGPhjnyXk/exec';
-
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwMwYvjERyxcc4W9AzjFkkwPFfVrsAft6JeOW6g1b1hucnSItyrmc-vmI-BGPhjnyXk/exec';
 const LOGO_URL = '/logo_ocasa.png'; 
 
 const INIT = {
@@ -365,7 +376,22 @@ const App = () => {
     .reduce((a, k) => a + (Number(d[k]) || 0), 0);
   const totalB = ['bultosPL4','bultosTort','bultosMCR','bultosAduana']
     .reduce((a, k) => a + (Number(d[k]) || 0), 0);
-  const n = v => v || '—';
+  const n = v => v || '0';
+
+  // ── Funciones de Compartir ─────────────────────────────────────────────────
+  const getShareText = () => {
+    return `📊 *INFORME OPERATIVO PL3 - OCASA*%0A` +
+           `📅 Fecha: ${d.fecha}%0A` +
+           `🌅 Turno: ${d.turno}%0A%0A` +
+           `🚛 *Descargas:* ${totalC} Camiones (${totalB} Bultos)%0A` +
+           `🚚 *Despachos:* ${n(d.despV)} Viajes / ${n(d.despB)} Bultos%0A` +
+           `✅ *RMA:* ${n(d.rmaCant)} unidades%0A` +
+           `📝 *Obs:* ${d.obs || 'Sin novedades'}`;
+  };
+
+  const shareWpp   = () => window.open(`https://wa.me/?text=${getShareText()}`, '_blank');
+  const shareSlack = () => window.open(`slack://channel?team=TXXXX&id=CXXXX`, '_blank'); // Slack requiere configuración de URI profunda según el equipo
+  const shareMail  = () => window.location.href = `mailto:?subject=Informe Operativo PL3 - ${d.turno}&body=${getShareText().replace(/%0A/g, '\n').replace(/\*/g, '')}`;
 
   return (
     <div>
@@ -460,8 +486,8 @@ const App = () => {
                 <div key={key} className={`desc-card ${cls}`}>
                   <div className="desc-card-title">{key}</div>
                   <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-                    <input type="text" name={cn} placeholder="Cant. Camiones" value={d[cn]} onChange={handle} className="input-field" style={{ textAlign:'center' }} />
-                    <input type="text" name={bn} placeholder="Total Bultos"   value={d[bn]} onChange={handle} className="input-field" style={{ textAlign:'center' }} />
+                    <input type="text" name={cn} placeholder="Camiones" value={d[cn]} onChange={handle} className="input-field" style={{ textAlign:'center' }} />
+                    <input type="text" name={bn} placeholder="Bultos"   value={d[bn]} onChange={handle} className="input-field" style={{ textAlign:'center' }} />
                   </div>
                 </div>
               ))}
@@ -475,7 +501,7 @@ const App = () => {
               placeholder="Novedades, incidentes, comentarios relevantes del turno..." className="obs-area" />
           </div>
 
-          {/* Acciones */}
+          {/* Acciones Principales */}
           <div className="btn-row">
             <button onClick={handleSave} disabled={saving} className="btn btn-save">
               {saving ? '⏳ Guardando...' : saved ? '✅ ¡Guardado!' : '💾 Guardar en Sheet'}
@@ -484,11 +510,26 @@ const App = () => {
               🖨️ Imprimir / Exportar PDF
             </button>
           </div>
+
+          {/* SECCIÓN COMPARTIR */}
+          <div className="share-section">
+            <div className="share-label">Compartir Reporte a Canales</div>
+            <div className="btn-row">
+              <button onClick={shareWpp} className="btn btn-wpp">
+                <span>🟢 WhatsApp</span>
+              </button>
+              <button onClick={shareSlack} className="btn btn-slack">
+                <span>🟣 Slack</span>
+              </button>
+              <button onClick={shareMail} className="btn btn-mail">
+                <span>🔵 E-Mail</span>
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* ══ REPORTE ══ */}
+        {/* ══ REPORTE (PREVISUALIZACIÓN) ══ */}
         <div className="report-preview">
-
           <div className="report-header">
             <img src={LOGO_URL} alt="OCASA" className="report-logo" />
             <div>
@@ -499,8 +540,6 @@ const App = () => {
           </div>
 
           <div className="report-body">
-
-            {/* Picking + Despachos */}
             <div className="report-grid-2">
               <div className="metric-card teal-c" style={{ paddingTop:22 }}>
                 <div className="metric-card-label">🛒 Picking Preparado</div>
@@ -522,7 +561,7 @@ const App = () => {
                 </div>
               </div>
 
-              <div className="metric-card teal-hero" style={{ paddingTop:22, textAlign:'center', display:'flex', flexDirection:'column', justifyContent:'center' }}>
+              <div className="metric-card teal-hero" style={{ paddingTop:22, textAlign:'center' }}>
                 <div className="metric-card-label">🚚 Despachos Realizados</div>
                 <div style={{ display:'flex', justifyContent:'center', alignItems:'baseline', gap:12 }}>
                   <div>
@@ -543,7 +582,6 @@ const App = () => {
               </div>
             </div>
 
-            {/* Descargas */}
             <div className="desc-table-wrap">
               <div className="desc-table-header">🚛 Descargas — Recepción de Stock</div>
               <div className="desc-table-body">
@@ -573,7 +611,6 @@ const App = () => {
                   <div className="stock-num">{n(d.movInt)}</div>
                   <div className="stock-label">Movimientos Internos</div>
                   
-                  {/* REPORTE CICLICO CON LOS 3 DATOS */}
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'baseline' }}>
                     <div className="stock-num" style={{ fontSize:22, color:'var(--teal)' }}>{n(d.ciclicoLoc)}</div>
                     <span style={{ fontSize:8, fontWeight:700, color:'var(--text-muted)' }}>LOC</span>
@@ -589,7 +626,6 @@ const App = () => {
               </div>
             </div>
 
-            {/* RMA + Viajes */}
             <div className="report-grid-2">
               <div className="metric-card purple-c" style={{ paddingTop:22, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                 <div className="metric-card-label">🔄 Logística Inversa — RMA</div>
@@ -610,7 +646,6 @@ const App = () => {
               </div>
             </div>
 
-            {/* Observaciones (condicional) */}
             {d.obs && (
               <div style={{ marginTop:20, background:'#F0FAFA', border:'1.5px solid var(--teal-mid)', borderRadius:10, padding:'16px 20px' }}>
                 <div style={{ fontFamily:'Barlow Condensed,sans-serif', fontSize:9, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--teal-dark)', marginBottom:6 }}>
