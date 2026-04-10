@@ -30,6 +30,7 @@ styleTag.textContent = `
     --blue:        #1B5EBF;
     --wpp:         #25D366;
     --slack:       #4A154B;
+    --gmail:       #DB4437;
   }
   body {
     font-family: 'Barlow', sans-serif;
@@ -148,24 +149,31 @@ styleTag.textContent = `
     display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px;
     border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 13px;
     font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
-    cursor: pointer; border: none; transition: transform 0.1s, filter 0.1s;
+    cursor: pointer; border: none; transition: transform 0.1s;
   }
   .btn:active { transform: translateY(1px); }
   .btn-save { background: var(--teal); color: var(--white); box-shadow: 0 4px 16px rgba(0,180,180,0.35); }
   .btn-print { background: var(--black); color: var(--white); box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
   
-  /* Botones Compartir */
+  /* Botones Compartir - Estilo Sutil */
   .share-section {
-    margin-top: 24px; padding-top: 20px; border-top: 1.5px dashed var(--border);
+    margin-top: 32px; padding: 16px; border-top: 1px solid var(--border);
+    background: #fcfdfd; border-radius: 8px;
     display: flex; flex-direction: column; align-items: center; gap: 12px;
   }
   .share-label {
-    font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 800;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 800;
     color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase;
   }
-  .btn-wpp   { background: var(--wpp); color: white; }
-  .btn-slack { background: var(--slack); color: white; }
-  .btn-mail  { background: var(--blue); color: white; }
+  .btn-subtle {
+    padding: 8px 16px; font-size: 11px; background: transparent; border: 1.5px solid transparent;
+  }
+  .btn-wpp-subtle   { border-color: var(--wpp); color: var(--wpp); }
+  .btn-wpp-subtle:hover { background: #e9fbf1; }
+  .btn-slack-subtle { border-color: var(--slack); color: var(--slack); }
+  .btn-slack-subtle:hover { background: #f5f0f6; }
+  .btn-gmail-subtle  { border-color: var(--gmail); color: var(--gmail); }
+  .btn-gmail-subtle:hover { background: #fdf2f1; }
 
   /* ── REPORTE ── */
   .report-preview {
@@ -301,6 +309,7 @@ styleTag.textContent = `
   @media print {
     body { background: white; }
     .panel-area { display: none !important; }
+    .share-section { display: none !important; } /* No imprimir botones */
     .report-preview { box-shadow: none; border: none; border-radius: 0; margin: 0; }
     .desc-table-header, .report-date-pill {
       -webkit-print-color-adjust: exact; print-color-adjust: exact;
@@ -391,7 +400,7 @@ const App = () => {
 
   const shareWpp   = () => window.open(`https://wa.me/?text=${getShareText()}`, '_blank');
   const shareSlack = () => window.open(`slack://channel?team=TXXXX&id=CXXXX`, '_blank'); // Slack requiere configuración de URI profunda según el equipo
-  const shareMail  = () => window.location.href = `mailto:?subject=Informe Operativo PL3 - ${d.turno}&body=${getShareText().replace(/%0A/g, '\n').replace(/\*/g, '')}`;
+  const shareGmail  = () => window.location.href = `mailto:?subject=Informe Operativo PL3 - ${d.turno}&body=${getShareText().replace(/%0A/g, '\n').replace(/\*/g, '')}`;
 
   return (
     <div>
@@ -509,22 +518,6 @@ const App = () => {
             <button onClick={() => window.print()} className="btn btn-print">
               🖨️ Imprimir / Exportar PDF
             </button>
-          </div>
-
-          {/* SECCIÓN COMPARTIR */}
-          <div className="share-section">
-            <div className="share-label">Compartir Reporte a Canales</div>
-            <div className="btn-row">
-              <button onClick={shareWpp} className="btn btn-wpp">
-                <span>🟢 WhatsApp</span>
-              </button>
-              <button onClick={shareSlack} className="btn btn-slack">
-                <span>🟣 Slack</span>
-              </button>
-              <button onClick={shareMail} className="btn btn-mail">
-                <span>🔵 E-Mail</span>
-              </button>
-            </div>
           </div>
         </div>
 
@@ -654,6 +647,22 @@ const App = () => {
                 <p style={{ fontFamily:'Barlow', fontSize:13, color:'var(--charcoal)', lineHeight:1.6 }}>{d.obs}</p>
               </div>
             )}
+          </div>
+
+          {/* SECCIÓN COMPARTIR - REUBICADA AL FINAL */}
+          <div className="share-section">
+            <div className="share-label">Compartir Resumen por Canales Sutiles</div>
+            <div className="btn-row">
+              <button onClick={shareWpp} className="btn btn-subtle btn-wpp-subtle">
+                <span>WhatsApp</span>
+              </button>
+              <button onClick={shareSlack} className="btn btn-subtle btn-slack-subtle">
+                <span>Slack</span>
+              </button>
+              <button onClick={shareGmail} className="btn btn-subtle btn-gmail-subtle">
+                <span>Gmail</span>
+              </button>
+            </div>
           </div>
 
           <div className="report-footer">
