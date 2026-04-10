@@ -125,14 +125,9 @@ styleTag.textContent = `
   .desc-col { padding: 12px; border-right: 1px solid var(--border); }
   .desc-col:last-child { border-right: none; }
   
-  /* Botones de acción y compartir sutiles en la parte inferior */
   .share-section {
     padding: 10px; border-top: 1px solid var(--border); background: #fcfdfd;
     display: flex; flex-direction: column; align-items: center; gap: 6px;
-  }
-  .share-label {
-    font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 800;
-    color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase;
   }
   .btn-subtle {
     padding: 5px 12px; font-size: 10px; font-family: 'Barlow Condensed', sans-serif;
@@ -142,20 +137,6 @@ styleTag.textContent = `
   .btn-wpp-subtle   { border-color: var(--wpp); color: var(--wpp); }
   .btn-slack-subtle { border-color: var(--slack); color: var(--slack); }
   .btn-gmail-subtle { border-color: var(--gmail); color: var(--gmail); }
-
-  /* Estilos para los botones de acción principales */
-  .action-section {
-    padding: 10px 20px; border-top: 1px solid var(--border);
-    background: #F8FAFA; display: flex; justify-content: center; gap: 10px;
-  }
-  .btn-action {
-    padding: 8px 16px; font-size: 11px; font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800; text-transform: uppercase; border-radius: 6px;
-    cursor: pointer; border: none; transition: 0.2s;
-  }
-  .btn-action:active { transform: translateY(1px); }
-  .btn-save-action { background: var(--teal); color: white; box-shadow: 0 2px 8px rgba(0,180,180,0.2); }
-  .btn-print-action { background: var(--black); color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
   
   .report-footer {
     border-top: 1px solid var(--border); padding: 8px 20px;
@@ -164,99 +145,37 @@ styleTag.textContent = `
   }
 
   @media print {
-    .panel-area, .share-section, .action-section { display: none !important; }
+    .panel-area, .share-section { display: none !important; }
     .main-wrap { padding: 0; }
     .report-preview { border: none; }
-    @page { size: auto; margin: 5mm; }
-  }
-  @media (max-width: 768px) {
-    .two-col, .report-grid { grid-template-columns: 1fr; }
-    .four-col { grid-template-columns: 1fr 1fr; }
-    .desc-table-body { grid-template-columns: 1fr; }
-    .header-inner { padding: 10px 16px; }
-    .main-wrap { padding: 16px 12px 60px; }
   }
 `;
 document.head.appendChild(styleTag);
 
-// ─── Constants ───────────────────────────────────────────────────────────────
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwMwYvjERyxcc4W9AzjFkkwPFfVrsAft6JeOW6g1b1hucnSItyrmc-vmI-BGPhjnyXk/exec';
-const LOGO_URL = '/logo_ocasa.png'; 
-
-const INIT = {
-  fecha: '', turno: 'Mañana',
-  pB2BV: '', pB2BB: '', pB2CV: '', pB2CB: '',
-  despV: '', despB: '', despP: '',
-  descPL4: '', descTort: '', descMCR: '', descAduana: '',
-  bultosPL4: '', bultosTort: '', bultosMCR: '', bultosAduana: '',
-  ciclicoLoc: '', ciclicoSKU: '', ciclicoBultos: '', movInt: '', obs: '',
-  rmaCant: '', rendiciones: '',
-};
-
-const Field = ({ label, name, placeholder, value, onChange, center }) => (
-  <div className="input-group">
-    {label && <span className="input-label">{label}</span>}
-    <input
-      type="text" name={name} placeholder={placeholder}
-      value={value} onChange={onChange} className="input-field"
-      style={center ? { textAlign: 'center' } : {}}
-    />
-  </div>
-);
-
 // ─── App ─────────────────────────────────────────────────────────────────────
 const App = () => {
-  const [saving, setSaving] = useState(false);
-  const [saved,  setSaved]  = useState(false);
-  const [d, setD]           = useState(INIT);
-
-  useEffect(() => {
-    const now = new Date();
-    setD(prev => ({
-      ...prev,
-      fecha: now.toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' }),
-    }));
-  }, []);
+  const [d, setD] = useState({
+    fecha: new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' }),
+    turno: 'Mañana', pB2BV: '', pB2BB: '', pB2CV: '', pB2CB: '',
+    despV: '', despB: '', despP: '',
+    descPL4: '', descTort: '', descMCR: '', descAduana: '',
+    bultosPL4: '', bultosTort: '', bultosMCR: '', bultosAduana: '',
+    ciclicoLoc: '', ciclicoSKU: '', ciclicoBultos: '', movInt: '', obs: '',
+    rmaCant: '', rendiciones: '',
+  });
 
   const handle = e => setD({ ...d, [e.target.name]: e.target.value });
-
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      await fetch(WEB_APP_URL, {
-        method: 'POST', mode: 'no-cors', body: JSON.stringify(d),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } catch {
-      alert('❌ Error al guardar. Verificá la conexión.');
-    } finally { setSaving(false); }
-  };
-
-  const totalC = ['descPL4','descTort','descMCR','descAduana']
-    .reduce((a, k) => a + (Number(d[k]) || 0), 0);
-  const totalB = ['bultosPL4','bultosTort','bultosMCR','bultosAduana']
-    .reduce((a, k) => a + (Number(d[k]) || 0), 0);
   const n = v => v || '0';
+  const totalC = [d.descPL4, d.descTort, d.descMCR, d.descAduana].reduce((a, b) => a + (Number(b) || 0), 0);
+  const totalB = [d.bultosPL4, d.bultosTort, d.bultosMCR, d.bultosAduana].reduce((a, b) => a + (Number(b) || 0), 0);
 
-  // ── Funciones de Compartir ─────────────────────────────────────────────────
-  const getShareText = () => {
-    return `📊 *INFORME OPERATIVO PL3 - OCASA*%0A` +
-           `📅 Fecha: ${d.fecha}%0A` +
-           `🌅 Turno: ${d.turno}%0A%0A` +
-           `🚛 *Descargas:* ${totalC} Camiones (${totalB} Bultos)%0A` +
-           `🚚 *Despachos:* ${n(d.despV)} Viajes / ${n(d.despB)} Bultos%0A` +
-           `📝 *Obs:* ${d.obs || 'Sin novedades'}`;
+  const shareGmail = () => {
+    const body = `INFORME OPERATIVO PL3\nFecha: ${d.fecha}\nTurno: ${d.turno}\nDescargas: ${totalC} Camiones\nDespachos: ${d.despV} Viajes`;
+    window.location.href = `mailto:?subject=Reporte PL3 - ${d.turno}&body=${encodeURIComponent(body)}`;
   };
-
-  const shareWpp   = () => window.open(`https://wa.me/?text=${getShareText()}`, '_blank');
-  const shareSlack = () => window.open(`slack://channel?team=TXXXX&id=CXXXX`, '_blank'); 
-  const shareGmail  = () => window.location.href = `mailto:?subject=Reporte PL3 - ${d.turno}&body=${encodeURIComponent(getShareText().replace(/%0A/g, '\n').replace(/\*/g, ''))}`;
 
   return (
     <div>
-      {/* HEADER */}
       <div className="app-header">
         <div className="header-inner">
           <div className="header-brand">
@@ -274,10 +193,9 @@ const App = () => {
       </div>
 
       <div className="main-wrap">
-        {/* ══ PANEL DE CARGA COMPACTO ══ */}
         <div className="panel-area">
           <div className="panel-card">
-            <div className="section-title" style={{color:'var(--green)'}}>Carga de Datos Operativos</div>
+            <div className="section-title" style={{color:'var(--green)'}}>Carga de Datos</div>
             <div className="input-grid">
               <div className="input-group">
                 <span className="input-label">B2B Viajes / Bultos</span>
@@ -294,35 +212,10 @@ const App = () => {
                   <input name="despP" placeholder="P" value={d.despP} onChange={handle} className="input-field" />
                 </div>
               </div>
-              {/* Resto de campos de carga - simplificados para compactar */}
-              <Field label="RMA Realizados" name="rmaCant" placeholder="0" value={d.rmaCant} onChange={handle} center />
-              <Field label="Localizadores Cíclicos" name="ciclicoLoc" placeholder="S/N" value={d.ciclicoLoc} onChange={handle} center />
             </div>
-          </div>
-
-          <div className="panel-card">
-            <div className="section-title" style={{color:'var(--orange)'}}>🚛 Camiones y Bultos Descargados</div>
-            <div className="input-grid" style={{gridTemplateColumns:'repeat(auto-fit, minmax(110px, 1fr))'}}>
-              {['PL4','Tort','MCR','Aduana'].map(cn => (
-                <div key={cn} className="desc-card-load" style={{padding:'8px', border:'1px solid var(--border)', borderRadius:'6px'}}>
-                  <div style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', color:'var(--orange)', marginBottom:'5px', textAlign:'center'}}>{cn}</div>
-                  <div style={{display:'flex', flexDirection:'column', gap:'4px'}}>
-                    <input name={'desc'+cn} placeholder="Camiones" value={d['desc'+cn]} onChange={handle} className="input-field" style={{fontSize:'12px', textAlign:'center', padding:'4px 6px'}} />
-                    <input name={'bultos'+cn} placeholder="Bultos" value={d['bultos'+cn]} onChange={handle} className="input-field" style={{fontSize:'12px', textAlign:'center', padding:'4px 6px'}} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="panel-card">
-            <div className="section-title" style={{color:'var(--teal)'}}>📝 Observaciones del Turno</div>
-            <textarea name="obs" rows={2} value={d.obs} onChange={handle}
-              placeholder="Novedades, incidentes, comentarios relevantes del turno..." className="obs-area" style={{fontSize:'12px', padding:'6px 8px'}} />
           </div>
         </div>
 
-        {/* ══ REPORTE (PREVISUALIZACIÓN) COMPACTO ══ */}
         <div className="report-preview">
           <div className="report-header">
             <div className="report-title">Informe Operativo · PL3</div>
@@ -330,7 +223,6 @@ const App = () => {
           </div>
 
           <div className="report-body">
-            {/* Picking + Despachos */}
             <div className="report-grid">
               <div className="metric-card" style={{borderColor:'var(--teal)'}}>
                 <div className="metric-card-label" style={{color:'var(--teal-dark)'}}>Picking Preparado</div>
@@ -347,53 +239,28 @@ const App = () => {
               </div>
             </div>
 
-            {/* Descargas */}
             <div className="desc-table-wrap">
               <div className="desc-table-header">Descargas — Recepción de Stock</div>
               <div className="desc-table-body">
                 <div className="desc-col">
-                  <div className="desc-col-title" style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', color:'var(--text-muted)', marginBottom:'8px'}}>Resumen Total</div>
-                  <div className="hero-number" style={{fontSize:'28px', color:'var(--black)'}}>{totalC}</div>
+                  <div className="hero-number" style={{fontSize:'24px', color:'var(--black)'}}>{totalC}</div>
                   <div style={{fontSize:'8px', fontWeight:700, color:'var(--text-muted)'}}>CAMIONES OPERADOS</div>
-                  <div className="hero-number" style={{fontSize:'22px', color:'var(--teal-dark)', marginTop:'8px'}}>{totalB.toLocaleString('es-AR')}</div>
-                  <div style={{fontSize:'8px', fontWeight:700, color:'var(--text-muted)'}}>BULTOS RECIBIDOS</div>
                 </div>
                 <div className="desc-col">
-                  <div className="desc-col-title" style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', color:'var(--text-muted)', marginBottom:'8px'}}>Detalle por Origen</div>
-                  {[
-                    {label:'PL4', key:'PL4'},
-                    {label:'TORTUGAS', key:'Tort'},
-                    {label:'MCR', key:'MCR'},
-                    {label:'ADUANA', key:'Aduana'}
-                  ].map(item => (
-                    <div key={item.key} style={{display:'flex', justifyContent:'space-between', fontSize:'10px', marginBottom:'2px', paddingBottom:'2px', borderBottom:'1px solid #F0F4F4'}}>
-                      <span style={{fontWeight:700, color: item.label === 'TORTUGAS' ? 'var(--teal-dark)' : 'var(--text-main)'}}>{item.label}</span>
-                      <span>{n(d['desc'+item.key])} Camiones — {n(d['bultos'+item.key])} Bultos</span>
+                  {['PL4','TORTUGAS','MCR','ADUANA'].map(label => (
+                    <div key={label} style={{display:'flex', justifyContent:'space-between', fontSize:'10px', marginBottom:'2px'}}>
+                      <span style={{fontWeight:700}}>{label}</span>
+                      <span>{n(d['desc'+label])} C / {n(d['bultos'+label])} B</span>
                     </div>
                   ))}
                 </div>
                 <div className="desc-col">
-                  <div className="desc-col-title" style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', color:'var(--text-muted)', marginBottom:'8px'}}>Stock Interno</div>
-                  <div className="metric-val" style={{fontSize:'20px', color:'var(--teal-dark)'}}>{n(d.movInt)}</div>
-                  <div style={{fontSize:'8px', fontWeight:700, color:'var(--text-muted)'}}>MOVIMIENTOS INTERNOS</div>
-                  
-                  {/* REPORTE CICLICO CON LOS 3 DATOS - ACTUALIZADO */}
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'baseline', marginTop:'10px', borderTop:'1px solid #F0F4F4', paddingTop:'8px' }}>
-                    <div className="stock-num" style={{ fontSize:18, color:'var(--teal)', fontWeight:900 }}>{n(d.ciclicoLoc)}</div>
-                    <span style={{ fontSize:7, fontWeight:800, color:'var(--text-muted)' }}>LOC</span>
-                    <span style={{ color:'#DDD' }}>/</span>
-                    <div className="stock-num" style={{ fontSize:18, color:'var(--teal)', fontWeight:900 }}>{n(d.ciclicoSKU)}</div>
-                    <span style={{ fontSize:7, fontWeight:800, color:'var(--text-muted)' }}>SKU</span>
-                    <span style={{ color:'#DDD' }}>/</span>
-                    <div className="stock-num" style={{ fontSize:18, color:'var(--teal)', fontWeight:900 }}>{n(d.ciclicoBultos)}</div>
-                    <span style={{ fontSize:7, fontWeight:800, color:'var(--text-muted)' }}>BUL</span>
-                  </div>
-                  <div style={{fontSize:'8px', fontWeight:700, color:'var(--text-muted)'}}>LOCALIZADORES CÍCLICOS</div>
+                  <div className="metric-val" style={{fontSize:'16px'}}>{n(d.movInt)}</div>
+                  <div style={{fontSize:'8px', fontWeight:700, color:'var(--text-muted)'}}>MOV. INTERNOS</div>
                 </div>
               </div>
             </div>
 
-            {/* RMA + Viajes */}
             <div className="report-grid">
               <div className="metric-card" style={{borderColor:'var(--purple)', background:'#F3EEFF'}}>
                 <div className="metric-card-label" style={{color:'var(--purple)', background:'#F3EEFF'}}>Logística Inversa — RMA</div>
@@ -406,21 +273,10 @@ const App = () => {
                 <div style={{fontSize:'8px', fontWeight:700}}>VIAJES RENDIDOS</div>
               </div>
             </div>
-            
-            {/* Observaciones (condicional) */}
-            {d.obs && (
-              <div style={{ marginTop:12, background:'#F0FAFA', border:'1px solid var(--teal-mid)', borderRadius:8, padding:'10px 15px' }}>
-                <div style={{ fontFamily:'Barlow Condensed,sans-serif', fontSize:8, fontWeight:800, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--teal-dark)', marginBottom:4 }}>
-                  📝 Observaciones del Turno
-                </div>
-                <p style={{ fontFamily:'Barlow', fontSize:11, color:'var(--charcoal)', lineHeight:1.5 }}>{d.obs}</p>
-              </div>
-            )}
           </div>
 
-          {/* SECCIÓN COMPARTIR - AL FINAL DEL REPORTE */}
           <div className="share-section">
-            <div className="share-label">Compartir resumen sutil</div>
+            <div style={{fontSize:'9px', fontWeight:800, color:'var(--text-muted)', textTransform:'uppercase'}}>Compartir reporte</div>
             <div style={{display:'flex', gap:'8px'}}>
               <button className="btn-subtle btn-wpp-subtle">WhatsApp</button>
               <button className="btn-subtle btn-slack-subtle">Slack</button>
@@ -428,18 +284,8 @@ const App = () => {
             </div>
           </div>
 
-          {/* SECCIÓN ACCIONES - MOVIDA AL FINAL DEL REPORTE */}
-          <div className="action-section">
-            <button onClick={handleSave} disabled={saving} className="btn-action btn-save-action">
-              {saving ? '⏳ Guardando...' : '💾 Guardar en Sheet'}
-            </button>
-            <button onClick={() => window.print()} className="btn-action btn-print-action">
-              🖨️ Imprimir / Exportar PDF
-            </button>
-          </div>
-
           <div className="report-footer">
-            <span>Optimización Logística PL3 · Tesis 2026</span>
+            <span>Optimización Logística PL3 · 2026</span>
             <span>OCASA Logística · {d.fecha}</span>
           </div>
         </div>
