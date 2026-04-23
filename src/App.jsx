@@ -635,7 +635,7 @@ const App = () => {
                 <div style={{ fontFamily:'Barlow Condensed,sans-serif', fontSize:9, fontWeight:800, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--teal-dark)', marginBottom:6 }}>
                   📝 Observaciones del Turno
                 </div>
-                <p style={{ fontFamily:'Barlow', fontSize:13, color:'var(--charcoal)', lineHeight:1.6 }}>{d.obs}</p>
+                <p style={{ fontFamily:'Barlow', fontSize:13, color:'var(--charcoal)', lineHeight:1.6, whiteSpace:'pre-wrap' }}>{d.obs}</p>
               </div>
             )}
           </div>
