@@ -129,8 +129,6 @@ styleTag.textContent = `
     padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1.5px solid var(--border);
     color: var(--teal-dark);
   }
-  .desc-card.pl4    { border-color: #FFD166; }
-  .desc-card.pl4    .desc-card-title { color: #B45309; border-color: #FFD166; }
   .desc-card.tort   { border-color: var(--teal-mid); }
   .desc-card.tort   .desc-card-title { color: var(--teal-dark); border-color: var(--teal-mid); }
   .desc-card.mcr    { border-color: #D0D7D7; }
@@ -155,7 +153,6 @@ styleTag.textContent = `
   .btn-save { background: var(--teal); color: var(--white); box-shadow: 0 4px 16px rgba(0,180,180,0.35); }
   .btn-print { background: var(--black); color: var(--white); box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
   
-  /* Botones Compartir - Estilo Sutil */
   .share-section {
     margin-top: 32px; padding: 16px; border-top: 1px solid var(--border);
     background: #fcfdfd; border-radius: 8px;
@@ -175,7 +172,6 @@ styleTag.textContent = `
   .btn-gmail-subtle  { border-color: var(--gmail); color: var(--gmail); }
   .btn-gmail-subtle:hover { background: #fdf2f1; }
 
-  /* ── REPORTE ── */
   .report-preview {
     background: var(--white); border-radius: 12px;
     box-shadow: 0 4px 30px rgba(0,0,0,0.10);
@@ -309,7 +305,7 @@ styleTag.textContent = `
   @media print {
     body { background: white; }
     .panel-area { display: none !important; }
-    .share-section { display: none !important; } /* No imprimir botones */
+    .share-section { display: none !important; }
     .report-preview { box-shadow: none; border: none; border-radius: 0; margin: 0; }
     .desc-table-header, .report-date-pill {
       -webkit-print-color-adjust: exact; print-color-adjust: exact;
@@ -327,15 +323,16 @@ styleTag.textContent = `
 document.head.appendChild(styleTag);
 
 // ─── Constants ───────────────────────────────────────────────────────────────
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwMwYvjERyxcc4W9AzjFkkwPFfVrsAft6JeOW6g1b1hucnSItyrmc-vmI-BGPhjnyXk/exec';
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyowOTTVkwNffoRnl4JXqen3CXlbjxMqWQkI_9g3YouhZXp8d7KKqlM-IewSDKIdaI19A/exec';
 const LOGO_URL = '/logo_ocasa.png'; 
 
 const INIT = {
   fecha: '', turno: 'Mañana',
   pB2BV: '', pB2BB: '', pB2CV: '', pB2CB: '',
   despV: '', despB: '', despP: '',
-  descPL4: '', descTort: '', descMCR: '', descAduana: '',
-  bultosPL4: '', bultosTort: '', bultosMCR: '', bultosAduana: '',
+  descTort: '', bultosTort: '',
+  descMCR: '', bultosMCR: '',
+  descAduana: '', bultosAduana: '',
   ciclicoLoc: '', ciclicoSKU: '', ciclicoBultos: '', movInt: '', obs: '',
   rmaCant: '', rendiciones: '',
 };
@@ -381,13 +378,12 @@ const App = () => {
     } finally { setSaving(false); }
   };
 
-  const totalC = ['descPL4','descTort','descMCR','descAduana']
+  const totalC = ['descTort','descMCR','descAduana']
     .reduce((a, k) => a + (Number(d[k]) || 0), 0);
-  const totalB = ['bultosPL4','bultosTort','bultosMCR','bultosAduana']
+  const totalB = ['bultosTort','bultosMCR','bultosAduana']
     .reduce((a, k) => a + (Number(d[k]) || 0), 0);
   const n = v => v || '0';
 
-  // ── Funciones de Compartir ─────────────────────────────────────────────────
   const getShareText = () => {
     return `📊 *INFORME OPERATIVO PL3 - OCASA*%0A` +
            `📅 Fecha: ${d.fecha}%0A` +
@@ -399,7 +395,7 @@ const App = () => {
   };
 
   const shareWpp   = () => window.open(`https://wa.me/?text=${getShareText()}`, '_blank');
-  const shareSlack = () => window.open(`slack://channel?team=TXXXX&id=CXXXX`, '_blank'); // Slack requiere configuración de URI profunda según el equipo
+  const shareSlack = () => window.open(`slack://channel?team=TXXXX&id=CXXXX`, '_blank');
   const shareGmail  = () => window.location.href = `mailto:?subject=Informe Operativo PL3 - ${d.turno}&body=${getShareText().replace(/%0A/g, '\n').replace(/\*/g, '')}`;
 
   return (
@@ -428,7 +424,7 @@ const App = () => {
 
       <div className="main-wrap">
 
-        {/* ══ PANEL DE CARGA ══ */}
+        {/* PANEL DE CARGA */}
         <div className="panel-area">
 
           <div className="two-col">
@@ -450,7 +446,6 @@ const App = () => {
                     <input type="text" name="pB2CB" placeholder="Bultos" value={d.pB2CB} onChange={handle} className="input-field" />
                   </div>
                 </div>
-                
                 <div className="input-group" style={{ gridColumn: 'span 2' }}>
                     <span className="input-label">Despachos — Viajes / Bultos / Pallets</span>
                     <div className="pair" style={{ gap: '5px' }}>
@@ -469,7 +464,6 @@ const App = () => {
                 <Field label="RMA Realizados (Unidades)"     name="rmaCant"     placeholder="0"   value={d.rmaCant}      onChange={handle} />
                 <Field label="Viajes Rendidos"                name="rendiciones" placeholder="0"   value={d.rendiciones} onChange={handle} />
                 <Field label="Movimientos Internos de Stock" name="movInt"      placeholder="0"   value={d.movInt}      onChange={handle} />
-                
                 <div className="input-group">
                     <span className="input-label">Cíclicos — Loc. / SKU / Bultos</span>
                     <div className="pair" style={{ gap: '5px' }}>
@@ -485,9 +479,8 @@ const App = () => {
           {/* Descargas */}
           <div className="panel-card">
             <div className="section-title orange">🚛 Camiones y Bultos Descargados</div>
-            <div className="four-col">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
               {[
-                { key:'PL4',    cls:'pl4',    cn:'descPL4',    bn:'bultosPL4'    },
                 { key:'TORTUGAS', cls:'tort',   cn:'descTort',   bn:'bultosTort'   },
                 { key:'MCR',      cls:'mcr',    cn:'descMCR',    bn:'bultosMCR'    },
                 { key:'ADUANA',   cls:'aduana', cn:'descAduana', bn:'bultosAduana' },
@@ -521,7 +514,7 @@ const App = () => {
           </div>
         </div>
 
-        {/* ══ REPORTE (PREVISUALIZACIÓN) ══ */}
+        {/* REPORTE */}
         <div className="report-preview">
           <div className="report-header">
             <img src={LOGO_URL} alt="OCASA" className="report-logo" />
@@ -588,10 +581,9 @@ const App = () => {
                 <div className="desc-col">
                   <div className="desc-col-title">Detalle por Origen</div>
                   {[
-                    { label:'PL4',        c:d.descPL4,    b:d.bultosPL4,    color:'#B45309' },
-                    { label:'TORTUGAS', c:d.descTort,    b:d.bultosTort,   color:'var(--teal-dark)' },
-                    { label:'MCR',        c:d.descMCR,    b:d.bultosMCR,    color:'var(--charcoal)' },
-                    { label:'ADUANA',    c:d.descAduana, b:d.bultosAduana, color:'var(--red)' },
+                    { label:'TORTUGAS', c:d.descTort,   b:d.bultosTort,   color:'var(--teal-dark)' },
+                    { label:'MCR',      c:d.descMCR,    b:d.bultosMCR,    color:'var(--charcoal)' },
+                    { label:'ADUANA',   c:d.descAduana, b:d.bultosAduana, color:'var(--red)' },
                   ].map(({ label, c, b, color }) => (
                     <div key={label} className="origen-row">
                       <span style={{ color, fontWeight:700, fontSize:11, letterSpacing:'0.06em' }}>{label}</span>
@@ -603,7 +595,6 @@ const App = () => {
                   <div className="desc-col-title">Stock Interno</div>
                   <div className="stock-num">{n(d.movInt)}</div>
                   <div className="stock-label">Movimientos Internos</div>
-                  
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'baseline' }}>
                     <div className="stock-num" style={{ fontSize:22, color:'var(--teal)' }}>{n(d.ciclicoLoc)}</div>
                     <span style={{ fontSize:8, fontWeight:700, color:'var(--text-muted)' }}>LOC</span>
@@ -649,7 +640,7 @@ const App = () => {
             )}
           </div>
 
-          {/* SECCIÓN COMPARTIR - REUBICADA AL FINAL */}
+          {/* COMPARTIR */}
           <div className="share-section">
             <div className="share-label">Compartir Resumen por Canales Sutiles</div>
             <div className="btn-row">
@@ -677,3 +668,4 @@ const App = () => {
 };
 
 export default App;
+
