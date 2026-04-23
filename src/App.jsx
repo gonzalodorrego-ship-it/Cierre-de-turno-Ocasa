@@ -369,7 +369,7 @@ const App = () => {
     try {
       await fetch(WEB_APP_URL, {
         method: 'POST', mode: 'no-cors', body: JSON.stringify(d),
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
