@@ -141,7 +141,6 @@ styleTag.textContent = `
     resize: none; outline: none; transition: border-color 0.15s;
   }
   .obs-area:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,180,180,0.12); }
-  
   .btn-row { display: flex; gap: 12px; justify-content: center; margin-top: 8px; flex-wrap: wrap; }
   .btn {
     display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px;
@@ -152,7 +151,6 @@ styleTag.textContent = `
   .btn:active { transform: translateY(1px); }
   .btn-save { background: var(--teal); color: var(--white); box-shadow: 0 4px 16px rgba(0,180,180,0.35); }
   .btn-print { background: var(--black); color: var(--white); box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
-  
   .share-section {
     margin-top: 32px; padding: 16px; border-top: 1px solid var(--border);
     background: #fcfdfd; border-radius: 8px;
@@ -171,7 +169,6 @@ styleTag.textContent = `
   .btn-slack-subtle:hover { background: #f5f0f6; }
   .btn-gmail-subtle  { border-color: var(--gmail); color: var(--gmail); }
   .btn-gmail-subtle:hover { background: #fdf2f1; }
-
   .report-preview {
     background: var(--white); border-radius: 12px;
     box-shadow: 0 4px 30px rgba(0,0,0,0.10);
@@ -302,6 +299,58 @@ styleTag.textContent = `
     letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted);
   }
 
+  /* ── Métodos de envío ───────────────────────────────────────────────────── */
+  .metodos-toggle {
+    width: 100%; background: transparent; border: 1.5px dashed var(--teal-mid);
+    border-radius: 7px; padding: 8px 14px;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal-dark);
+    cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .metodos-toggle:hover { background: var(--teal-light); border-color: var(--teal); }
+  .metodo-row {
+    display: flex; gap: 8px; align-items: center;
+    background: #F8FBFB; border: 1px solid var(--border); border-radius: 7px; padding: 6px 8px;
+  }
+  .metodo-select {
+    border: 1.5px solid var(--border); border-radius: 6px; padding: 7px 10px;
+    font-family: 'Barlow Semi Condensed', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--text-main); background: var(--white); outline: none; flex: 2; min-width: 0;
+  }
+  .metodo-select:focus { border-color: var(--teal); }
+  .metodo-input {
+    border: 1.5px solid var(--border); border-radius: 6px; padding: 7px 10px;
+    font-family: 'Barlow Semi Condensed', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--text-main); background: var(--white); outline: none;
+    flex: 1; min-width: 0; text-align: center; width: 100%;
+  }
+  .metodo-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,180,180,0.10); }
+  .metodo-input::placeholder { color: #C8D0D0; font-size: 12px; }
+  .btn-add-metodo {
+    background: var(--teal-light); border: 1.5px solid var(--teal-mid); color: var(--teal-dark);
+    padding: 7px 14px; border-radius: 6px;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 800;
+    letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+    transition: background 0.15s; align-self: flex-start;
+  }
+  .btn-add-metodo:hover { background: var(--teal-mid); }
+  .btn-remove {
+    background: none; border: none; cursor: pointer; color: var(--red);
+    font-size: 14px; padding: 4px 6px; border-radius: 4px; line-height: 1;
+    flex-shrink: 0; transition: background 0.1s;
+  }
+  .btn-remove:hover { background: #FEE8E8; }
+  .metodo-report-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 0; border-bottom: 1px solid rgba(0,180,180,0.15);
+    font-family: 'Barlow Condensed', sans-serif; font-size: 11px;
+  }
+  .metodo-report-row:last-child { border-bottom: none; }
+  .metodo-report-name { font-weight: 700; color: var(--teal-dark); letter-spacing: 0.04em; text-transform: uppercase; }
+  .metodo-report-vals { font-weight: 800; color: var(--text-main); font-size: 12px; }
+  /* ─────────────────────────────────────────────────────────────────────────── */
+
   @media print {
     body { background: white; }
     .panel-area { display: none !important; }
@@ -324,12 +373,18 @@ document.head.appendChild(styleTag);
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyowOTTVkwNffoRnl4JXqen3CXlbjxMqWQkI_9g3YouhZXp8d7KKqlM-IewSDKIdaI19A/exec';
-const LOGO_URL = '/logo_ocasa.png'; 
+const LOGO_URL = '/logo_ocasa.png';
+
+const METODOS_ENVIO = [
+  'OCA', 'Andreani', 'Correo Argentino', 'DHL', 'FedEx',
+  'Urbano', 'Pickit', 'MercadoEnvíos', 'Rappi', 'Liftit', 'Otro'
+];
 
 const INIT = {
   fecha: '', turno: 'Mañana',
   pB2BV: '', pB2BB: '', pB2CV: '', pB2CB: '',
   despV: '', despB: '', despP: '',
+  metodos: [],
   descTort: '', bultosTort: '',
   descMCR: '', bultosMCR: '',
   descAduana: '', bultosAduana: '',
@@ -350,9 +405,10 @@ const Field = ({ label, name, placeholder, value, onChange, center }) => (
 
 // ─── App ─────────────────────────────────────────────────────────────────────
 const App = () => {
-  const [saving, setSaving] = useState(false);
-  const [saved,  setSaved]  = useState(false);
-  const [d, setD]           = useState(INIT);
+  const [saving, setSaving]           = useState(false);
+  const [saved,  setSaved]            = useState(false);
+  const [d, setD]                     = useState(INIT);
+  const [showMetodos, setShowMetodos] = useState(false);
 
   useEffect(() => {
     const now = new Date();
@@ -363,6 +419,21 @@ const App = () => {
   }, []);
 
   const handle = e => setD({ ...d, [e.target.name]: e.target.value });
+
+  const addMetodo = () => setD(prev => ({
+    ...prev,
+    metodos: [...prev.metodos, { id: Date.now(), metodo: 'OCA', bultos: '', pallets: '' }]
+  }));
+
+  const removeMetodo = (id) => setD(prev => ({
+    ...prev,
+    metodos: prev.metodos.filter(m => m.id !== id)
+  }));
+
+  const updateMetodo = (id, field, value) => setD(prev => ({
+    ...prev,
+    metodos: prev.metodos.map(m => m.id === id ? { ...m, [field]: value } : m)
+  }));
 
   const handleSave = async () => {
     setSaving(true);
@@ -447,13 +518,70 @@ const App = () => {
                   </div>
                 </div>
                 <div className="input-group" style={{ gridColumn: 'span 2' }}>
-                    <span className="input-label">Despachos — Viajes / Bultos / Pallets</span>
-                    <div className="pair" style={{ gap: '5px' }}>
-                        <input type="text" name="despV" placeholder="Viajes" value={d.despV} onChange={handle} className="input-field" />
-                        <input type="text" name="despB" placeholder="Bultos" value={d.despB} onChange={handle} className="input-field" />
-                        <input type="text" name="despP" placeholder="Pallets" value={d.despP} onChange={handle} className="input-field" />
-                    </div>
+                  <span className="input-label">Despachos — Viajes / Bultos / Pallets</span>
+                  <div className="pair" style={{ gap: '5px' }}>
+                    <input type="text" name="despV" placeholder="Viajes"  value={d.despV} onChange={handle} className="input-field" />
+                    <input type="text" name="despB" placeholder="Bultos"  value={d.despB} onChange={handle} className="input-field" />
+                    <input type="text" name="despP" placeholder="Pallets" value={d.despP} onChange={handle} className="input-field" />
+                  </div>
                 </div>
+
+                {/* ── Desglose por método de envío ── */}
+                <div style={{ gridColumn: 'span 2' }}>
+                  <button className="metodos-toggle" onClick={() => setShowMetodos(!showMetodos)}>
+                    <span>
+                      📦 Desglose por Método de Envío
+                      {d.metodos.length > 0 && (
+                        <span style={{ marginLeft: 8, background: 'var(--teal)', color: 'white', borderRadius: 10, padding: '1px 7px', fontSize: 10 }}>
+                          {d.metodos.length}
+                        </span>
+                      )}
+                    </span>
+                    <span style={{ fontSize: 12 }}>{showMetodos ? '▲' : '▼'}</span>
+                  </button>
+
+                  {showMetodos && (
+                    <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 7 }}>
+                      {d.metodos.length > 0 && (
+                        <div style={{ display: 'flex', gap: 8, paddingLeft: 8 }}>
+                          <span style={{ flex: 2, fontFamily: "'Barlow Condensed'", fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Método</span>
+                          <span style={{ flex: 1, fontFamily: "'Barlow Condensed'", fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', textAlign: 'center' }}>Bultos</span>
+                          <span style={{ flex: 1, fontFamily: "'Barlow Condensed'", fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', textAlign: 'center' }}>Pallets</span>
+                          <span style={{ width: 28 }}></span>
+                        </div>
+                      )}
+                      {d.metodos.map(m => (
+                        <div key={m.id} className="metodo-row">
+                          <select
+                            value={m.metodo}
+                            onChange={e => updateMetodo(m.id, 'metodo', e.target.value)}
+                            className="metodo-select"
+                          >
+                            {METODOS_ENVIO.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                          </select>
+                          <input
+                            type="text" placeholder="Bultos"
+                            value={m.bultos}
+                            onChange={e => updateMetodo(m.id, 'bultos', e.target.value)}
+                            className="metodo-input"
+                          />
+                          <input
+                            type="text" placeholder="Pallets"
+                            value={m.pallets}
+                            onChange={e => updateMetodo(m.id, 'pallets', e.target.value)}
+                            className="metodo-input"
+                          />
+                          <button className="btn-remove" onClick={() => removeMetodo(m.id)}>✕</button>
+                        </div>
+                      ))}
+                      <button className="btn-add-metodo" onClick={addMetodo}>
+                        ➕ Agregar método
+                      </button>
+                    </div>
+                  )}
+                </div>
+                {/* ───────────────────────────────── */}
+
               </div>
             </div>
 
@@ -465,12 +593,12 @@ const App = () => {
                 <Field label="Viajes Rendidos"                name="rendiciones" placeholder="0"   value={d.rendiciones} onChange={handle} />
                 <Field label="Movimientos Internos de Stock" name="movInt"      placeholder="0"   value={d.movInt}      onChange={handle} />
                 <div className="input-group">
-                    <span className="input-label">Cíclicos — Loc. / SKU / Bultos</span>
-                    <div className="pair" style={{ gap: '5px' }}>
-                        <input type="text" name="ciclicoLoc" placeholder="Loc." value={d.ciclicoLoc} onChange={handle} className="input-field" />
-                        <input type="text" name="ciclicoSKU" placeholder="SKU" value={d.ciclicoSKU} onChange={handle} className="input-field" />
-                        <input type="text" name="ciclicoBultos" placeholder="Bult." value={d.ciclicoBultos} onChange={handle} className="input-field" />
-                    </div>
+                  <span className="input-label">Cíclicos — Loc. / SKU / Bultos</span>
+                  <div className="pair" style={{ gap: '5px' }}>
+                    <input type="text" name="ciclicoLoc"    placeholder="Loc."  value={d.ciclicoLoc}    onChange={handle} className="input-field" />
+                    <input type="text" name="ciclicoSKU"    placeholder="SKU"   value={d.ciclicoSKU}    onChange={handle} className="input-field" />
+                    <input type="text" name="ciclicoBultos" placeholder="Bult." value={d.ciclicoBultos} onChange={handle} className="input-field" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -547,25 +675,44 @@ const App = () => {
                 </div>
               </div>
 
-              <div className="metric-card teal-hero" style={{ paddingTop:22, textAlign:'center' }}>
+              {/* ── Despachos con desglose por método ── */}
+              <div className="metric-card teal-hero" style={{ paddingTop:22 }}>
                 <div className="metric-card-label">🚚 Despachos Realizados</div>
-                <div style={{ display:'flex', justifyContent:'center', alignItems:'baseline', gap:12 }}>
-                  <div>
+                <div style={{ display:'flex', justifyContent:'center', alignItems:'baseline', gap:12, marginBottom: d.metodos.length > 0 ? 12 : 0 }}>
+                  <div style={{ textAlign:'center' }}>
                     <div className="hero-number" style={{ fontSize:38 }}>{n(d.despV)}</div>
                     <div className="hero-sub">Viajes</div>
                   </div>
                   <div style={{ fontSize:24, color:'var(--teal)', fontWeight:300 }}>/</div>
-                  <div>
+                  <div style={{ textAlign:'center' }}>
                     <div className="hero-number" style={{ fontSize:38 }}>{n(d.despB)}</div>
                     <div className="hero-sub">Bultos</div>
                   </div>
                   <div style={{ fontSize:24, color:'var(--teal)', fontWeight:300 }}>/</div>
-                  <div>
+                  <div style={{ textAlign:'center' }}>
                     <div className="hero-number" style={{ fontSize:38 }}>{n(d.despP)}</div>
                     <div className="hero-sub">Pallets</div>
                   </div>
                 </div>
+                {d.metodos.length > 0 && (
+                  <div style={{ borderTop: '1.5px solid rgba(0,180,180,0.25)', paddingTop: 10 }}>
+                    <div style={{ fontFamily:"'Barlow Condensed', sans-serif", fontSize: 9, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--teal-dark)', marginBottom: 7 }}>
+                      Desglose por Método
+                    </div>
+                    {d.metodos.map(m => (
+                      <div key={m.id} className="metodo-report-row">
+                        <span className="metodo-report-name">{m.metodo}</span>
+                        <span className="metodo-report-vals">
+                          {m.bultos || '0'} <span style={{ fontWeight:600, color:'var(--text-muted)', fontSize:9 }}>BULT</span>
+                          <span style={{ color:'#C8E0E0', margin:'0 5px' }}>/</span>
+                          {m.pallets || '0'} <span style={{ fontWeight:600, color:'var(--text-muted)', fontSize:9 }}>PAL</span>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
+              {/* ──────────────────────────────────────── */}
             </div>
 
             <div className="desc-table-wrap">
@@ -610,25 +757,27 @@ const App = () => {
               </div>
             </div>
 
+            {/* ── RMA y Viajes — versión compacta ── */}
             <div className="report-grid-2">
-              <div className="metric-card purple-c" style={{ paddingTop:22, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+              <div className="metric-card purple-c" style={{ paddingTop:22, display:'flex', justifyContent:'space-between', alignItems:'center', padding:'22px 16px 14px' }}>
                 <div className="metric-card-label">🔄 Logística Inversa — RMA</div>
                 <div>
-                  <div style={{ fontFamily:'Barlow Condensed,sans-serif', fontSize:52, fontWeight:900, color:'var(--purple)', lineHeight:1 }}>{n(d.rmaCant)}</div>
+                  <div style={{ fontFamily:'Barlow Condensed,sans-serif', fontSize:38, fontWeight:900, color:'var(--purple)', lineHeight:1 }}>{n(d.rmaCant)}</div>
                   <div style={{ fontFamily:'Barlow Condensed,sans-serif', fontSize:9, fontWeight:700, color:'#9B6EE0', textTransform:'uppercase', letterSpacing:'0.12em', marginTop:2 }}>Unidades RMA Realizadas</div>
                 </div>
-                <div style={{ width:52, height:52, borderRadius:'50%', background:'#EDE0FF', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Barlow Condensed', fontSize:22, fontWeight:900, color:'var(--purple)' }}>R</div>
+                <div style={{ width:40, height:40, borderRadius:'50%', background:'#EDE0FF', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Barlow Condensed', fontSize:18, fontWeight:900, color:'var(--purple)' }}>R</div>
               </div>
 
-              <div className="metric-card blue-c" style={{ paddingTop:22, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+              <div className="metric-card blue-c" style={{ paddingTop:22, display:'flex', justifyContent:'space-between', alignItems:'center', padding:'22px 16px 14px' }}>
                 <div className="metric-card-label">🧾 Control de Viajes</div>
                 <div>
-                  <div style={{ fontFamily:'Barlow Condensed,sans-serif', fontSize:52, fontWeight:900, color:'var(--blue)', lineHeight:1 }}>{n(d.rendiciones)}</div>
+                  <div style={{ fontFamily:'Barlow Condensed,sans-serif', fontSize:38, fontWeight:900, color:'var(--blue)', lineHeight:1 }}>{n(d.rendiciones)}</div>
                   <div style={{ fontFamily:'Barlow Condensed,sans-serif', fontSize:9, fontWeight:700, color:'#4A80D4', textTransform:'uppercase', letterSpacing:'0.12em', marginTop:2 }}>Viajes Rendidos</div>
                 </div>
-                <div style={{ width:52, height:52, borderRadius:'50%', background:'#D8E8FF', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Barlow Condensed', fontSize:22, fontWeight:900, color:'var(--blue)' }}>V</div>
+                <div style={{ width:40, height:40, borderRadius:'50%', background:'#D8E8FF', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Barlow Condensed', fontSize:18, fontWeight:900, color:'var(--blue)' }}>V</div>
               </div>
             </div>
+            {/* ──────────────────────────────────── */}
 
             {d.obs && (
               <div style={{ marginTop:20, background:'#F0FAFA', border:'1.5px solid var(--teal-mid)', borderRadius:10, padding:'16px 20px' }}>
@@ -668,4 +817,3 @@ const App = () => {
 };
 
 export default App;
-
